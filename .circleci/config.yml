@@ -6,7 +6,7 @@ parameters:
     default: pr_build
 orbs:
   # secrethub: secrethub/cli@1.0.0
-  gravitee: gravitee-io/gravitee@0.0.1
+  gravitee: gravitee-io/gravitee@dev:0.0.1
 
 workflows:
   version: 2.1
