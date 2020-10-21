@@ -21,12 +21,14 @@ workflows:
       equal: [ pr_build, << pipeline.parameters.gio_action >> ]
     jobs:
       # Job defined from the [gravitee-io/gravitee@0.0.1] Circle CI Orb
-      - gravitee/pr-build
+      - gravitee/pr-build:
+          context: cicd-orchestrator
   release:
     when:
       equal: [ release, << pipeline.parameters.gio_action >> ]
     jobs:
       # Job defined from the [gravitee-io/gravitee@0.0.1] Circle CI Orb
       - gravitee/release:
+          context: cicd-orchestrator
           dry_run: << pipeline.parameters.dry_run >>
           # maven_version: 3.6.3
