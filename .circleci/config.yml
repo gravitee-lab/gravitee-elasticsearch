@@ -1,29 +1,24 @@
-# Machine executor, set the machine key to true in .circleci/config.yml:
 version: 2.1
 parameters:
-  # 'gio_action' will soon be renamed 'cicd_process'
   gio_action:
     type: enum
-    enum: [product_release, lts_support_release, sts_support_release, dev_pr_review, support_pr_review, pull_requests_bot]
-    # default parameter value will for now, select no workflow to execute.
-    default: pull_requests_bot
-  dry_run:
-    type: boolean
-    # always run in dry run modeby default
-    default: true
-
+    enum: [release, pr_build]
+    default: pr_build
 orbs:
   # secrethub: secrethub/cli@1.0.0
-  gravitee: gravitee-io/gravitee@dev:0.0.1
-  # gravitee: gravitee-io/gravitee@0.0.1
+  gravitee: gravitee-io/gravitee@0.0.1
 
 workflows:
   version: 2.1
+  pull_requests:
+    jobs:
+      # Job defined from the [gravitee-io/gravitee@0.0.1] Circle CI Orb
+      - gravitee/pr-build
   release:
     when:
-      equal: [ product_release, << pipeline.parameters.gio_action >> ]
+      equal: [ release, << pipeline.parameters.gio_action >> ]
     jobs:
-      # Job defined from the [orbinoid2/gravitee@0.0.7] Circle CI Orb
+      # Job defined from the [gravitee-io/gravitee@0.0.1] Circle CI Orb
       - gravitee/release:
-          dry_run: << pipeline.parameters.dry_run >>
-          maven_version: 3.6.3
+          dry-run: << pipeline.parameters.dry_run >>
+          # maven_version: 3.6.3
