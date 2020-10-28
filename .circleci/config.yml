@@ -1,5 +1,5 @@
 version: 2.1
-
+# DEPLOYMENT AUTOMATION : TEST 1
 parameters:
   gio_action:
     type: enum
@@ -11,7 +11,6 @@ parameters:
     description: "Run in dry run mode?"
 
 orbs:
-  # secrethub: secrethub/cli@1.0.0
   gravitee: gravitee-io/gravitee@dev:0.0.1
 
 workflows:
@@ -20,15 +19,12 @@ workflows:
     when:
       equal: [ pr_build, << pipeline.parameters.gio_action >> ]
     jobs:
-      # Job defined from the [gravitee-io/gravitee@0.0.1] Circle CI Orb
       - gravitee/pr-build:
           context: cicd-orchestrator
   release:
     when:
       equal: [ release, << pipeline.parameters.gio_action >> ]
     jobs:
-      # Job defined from the [gravitee-io/gravitee@0.0.1] Circle CI Orb
       - gravitee/release:
           context: cicd-orchestrator
           dry_run: << pipeline.parameters.dry_run >>
-          # maven_version: 3.6.3
