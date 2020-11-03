@@ -1,5 +1,5 @@
 version: 2.1
-# DEPLOYMENT AUTOMATION : TEST 1
+
 parameters:
   gio_action:
     type: enum
@@ -11,7 +11,8 @@ parameters:
     description: "Run in dry run mode?"
 
 orbs:
-  gravitee: gravitee-io/gravitee@dev:0.0.1
+  gravitee: gravitee-io/gravitee@dev:1.0
+  # gravitee: gravitee-io/gravitee@1.0
 
 workflows:
   version: 2.1
