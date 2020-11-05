@@ -9,10 +9,28 @@ parameters:
     type: boolean
     default: true
     description: "Run in dry run mode?"
+  secrethub_org:
+    type: string
+    default: "your-secrethuborg"
+    description: "SecretHub Org to use to fetch secrets ?"
+  secrethub_repo:
+    type: string
+    default: "your-secrethubrepo"
+    description: "SecretHub Repo to use to fetch secrets ?"
 
 orbs:
   gravitee: gravitee-io/gravitee@dev:1.0.1
 
+jobs:
+  testing_env_var_from_cci_context:
+    machine:
+      image: 'ubuntu-1604:201903-01'
+    steps:
+      - run:
+          name: "Testing SecretHub Env. Vars. defined in Cci context [cicd-orchestrator]"
+          command: |
+                    echo "SECRETHUB_ORG=[${SECRETHUB_ORG}]"
+                    echo "SECRETHUB_REPO=[${SECRETHUB_REPO}]"
 workflows:
   version: 2.1
   pull_requests:
@@ -21,6 +39,10 @@ workflows:
     jobs:
       - gravitee/pr-build:
           context: cicd-orchestrator
+  testing_env_var_in_context:
+    jobs:
+      - testing_env_var_from_cci_context:
+          context: cicd-orchestrator
   release:
     when:
       equal: [ release, << pipeline.parameters.gio_action >> ]
@@ -28,3 +50,7 @@ workflows:
       - gravitee/release:
           context: cicd-orchestrator
           dry_run: << pipeline.parameters.dry_run >>
+          secrethub_org: << pipeline.parameters.secrethub_org >>
+          secrethub_repo: << pipeline.parameters.secrethub_repo >>
+          # secrethub_org: ${SECRETHUB_ORG}
+          # secrethub_repo: ${SECRETHUB_REPO}
