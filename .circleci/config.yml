@@ -9,6 +9,10 @@ parameters:
     type: boolean
     default: true
     description: "Run in dry run mode?"
+  dry_run_mvn_profile_id:
+    type: string
+    default: "gravitee-dry-run"
+    description: "Maven ID of the Maven profile to use for a dry run ?"
   secrethub_org:
     type: string
     default: "your-secrethuborg"
@@ -19,18 +23,8 @@ parameters:
     description: "SecretHub Repo to use to fetch secrets ?"
 
 orbs:
-  gravitee: gravitee-io/gravitee@dev:1.0.1
+  gravitee: gravitee-io/gravitee@dev:1.0.2
 
-jobs:
-  testing_env_var_from_cci_context:
-    machine:
-      image: 'ubuntu-1604:201903-01'
-    steps:
-      - run:
-          name: "Testing SecretHub Env. Vars. defined in Cci context [cicd-orchestrator]"
-          command: |
-                    echo "SECRETHUB_ORG=[${SECRETHUB_ORG}]"
-                    echo "SECRETHUB_REPO=[${SECRETHUB_REPO}]"
 workflows:
   version: 2.1
   pull_requests:
@@ -38,10 +32,6 @@ workflows:
       equal: [ pr_build, << pipeline.parameters.gio_action >> ]
     jobs:
       - gravitee/pr-build:
-          context: cicd-orchestrator
-  testing_env_var_in_context:
-    jobs:
-      - testing_env_var_from_cci_context:
           context: cicd-orchestrator
   release:
     when:
@@ -52,5 +42,4 @@ workflows:
           dry_run: << pipeline.parameters.dry_run >>
           secrethub_org: << pipeline.parameters.secrethub_org >>
           secrethub_repo: << pipeline.parameters.secrethub_repo >>
-          # secrethub_org: ${SECRETHUB_ORG}
-          # secrethub_repo: ${SECRETHUB_REPO}
+          dry_run_mvn_profile_id: << pipeline.parameters.dry_run_mvn_profile_id >>
